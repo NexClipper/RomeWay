@@ -1,2 +1,2 @@
-# Romeway: All roads lead to rome
-## Romeway Open-source project for enhanced Envoy control plane.
+# RomeWay: All roads lead to Rome
+## RomeWay Open-source project for enhanced Envoy control plane.
