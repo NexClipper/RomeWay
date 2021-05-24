@@ -1,0 +1,20 @@
+version: '3'
+services:
+   envoy-xds:
+      image: ${MODULE_IMAGE}
+      container_name: romeway
+      ports:
+         - "18000:18000"
+         - "19000:19000"
+      volumes:
+         - ./xds_config:/app/configuration
+      environment:
+        CONFIG_PATH: ./configuration
+        DEFAULT_CONFIG: default
+        CONTROL_PORT: 18000
+        XDS_PORT: 19000
+      command:
+         - bash
+         - -c
+         - |
+            java -jar /app/*.jar

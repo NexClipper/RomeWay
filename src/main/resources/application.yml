@@ -1,0 +1,33 @@
+logging:
+  pattern:
+    console: '%d{MM/dd HH:mm:ss.SSS} [%t] [%clr(%-5p)] %clr(%logger.%M\(%line\)){cyan} - %msg %n'
+    file: '%d{MM/dd HH:mm:ss.SSS} [%t] [%clr(%-5p)] %clr(%logger.%M\(%line\)){cyan} - %msg %n'
+  level:
+    root: info
+    co.kr.nexcloud.envoy: debug
+
+    
+spring:
+  application:
+    name: envoy-control-plane
+
+server:
+  port: ${CONTROL_PORT:18000}
+    
+nc:
+  discovery:
+    server:
+      port: ${XDS_PORT:19000}
+      grpc:
+        channel-timeout: ${GRPC_TIMEOUT:180000} #milliseconds
+    config:
+      path: ${CONFIG_PATH:./configuration}
+      default-name: ${DEFAULT_CONFIG:default}
+    endpoint:
+      healthcheck:
+        interval: ${HEALTHCHECK_INTERVAL:10}
+        max-count: ${HEALTHCHECK_MAX-COUNT:50}
+
+opentracing:
+  jaeger:
+    enabled: false

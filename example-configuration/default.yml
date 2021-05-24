@@ -1,0 +1,55 @@
+static_resources:
+  clusters:
+#   - name: user_service
+#     connect_timeout: 1s
+#     lb_policy: ROUND_ROBIN
+#     type: EDS
+#     eds_cluster_config:
+#       eds_config:
+#         resource_api_version: V3
+#         api_config_source:
+#           api_type: GRPC
+#           transport_api_version: V3
+#           grpc_services:
+#             - envoy_grpc:
+#                 cluster_name: xds_cluster
+   - name: nc_service
+     connect_timeout: 1s
+     lb_policy: ROUND_ROBIN
+     type: EDS
+     eds_cluster_config:
+       eds_config:
+         resource_api_version: V3
+         api_config_source:
+           api_type: GRPC
+           transport_api_version: V3
+           grpc_services:
+             - envoy_grpc:
+                 cluster_name: xds_cluster
+#   - name: klevr_service
+#     connect_timeout: 1s
+#     lb_policy: ROUND_ROBIN
+#     type: EDS
+#     eds_cluster_config:
+#       eds_config:
+#         resource_api_version: V3
+#         api_config_source:
+#           api_type: GRPC
+#           transport_api_version: V3
+#           grpc_services:
+#             - envoy_grpc:
+#                 cluster_name: xds_cluster
+
+   - name: jaeger
+     connect_timeout: 1s
+     type: STRICT_DNS
+     lb_policy: ROUND_ROBIN
+     load_assignment:
+       cluster_name: jaeger
+       endpoints:
+       - lb_endpoints:
+         - endpoint:
+            address:
+              socket_address:
+                address: jaeger
+                port_value: 9411

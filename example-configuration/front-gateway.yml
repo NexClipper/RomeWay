@@ -1,0 +1,94 @@
+static_resources:
+  listeners:
+  - name: inbound_http
+    address:
+      socket_address:
+        address: 0.0.0.0
+        port_value: 10000
+    traffic_direction: INBOUND
+    filter_chains:
+    - filters:
+      - name: envoy.filters.network.http_connection_manager
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+# jaeger trace 설정 시작
+          generate_request_id: true
+          tracing:
+            provider:
+              name: envoy.tracers.zipkin
+              typed_config:
+                "@type": type.googleapis.com/envoy.config.trace.v3.ZipkinConfig
+                collector_cluster: jaeger
+                collector_endpoint: "/api/v2/spans"
+                shared_span_context: false
+                collector_endpoint_version: HTTP_JSON
+          stat_prefix: ingress_http
+          http_filters:
+          - name: envoy.filters.http.router
+          route_config:
+            name: ingress_route
+            validate_clusters: false
+            virtual_hosts:
+            - name: backend
+              domains:
+                - "*"
+              routes:
+              - match: { prefix: "/login" }
+                route: { cluster: nc_service }
+                decorator: { operation: userService }
+              - match: { prefix: "/join" }
+                route: { cluster: nc_service }
+                decorator: { operation: userService }
+              - match: { prefix: "/nexclipper/" }
+                route: { cluster: nc_service, prefix_rewrite: "/" }
+                decorator: { operation: ncService }
+              - match: { prefix: "/klevr/" }
+                route: { cluster: klevr_service, prefix_rewrite: "/" }
+                decorator: { operation: klevrService }
+              - match: { prefix: "/" }
+                route: { cluster: nc_service }
+                decorator: { operation: ncService }
+                
+  clusters:
+#   - name: user_service
+#     connect_timeout: 1s
+#     lb_policy: ROUND_ROBIN
+#     type: STRICT_DNS
+#     http_protocol_options: {}
+#     load_assignment:
+#      cluster_name: user_service
+#      endpoints:
+#      - lb_endpoints:
+#        - endpoint:
+#            address:
+#              socket_address:
+#                address: 06ff3094b9a9
+#                port_value: 8080
+#   - name: nc_service
+#     connect_timeout: 1s
+#     lb_policy: ROUND_ROBIN
+#     type: STRICT_DNS
+#     http_protocol_options: {}
+#     load_assignment:
+#      cluster_name: nc_service
+#      endpoints:
+#      - lb_endpoints:
+#        - endpoint:
+#            address:
+#              socket_address:
+#                address: 06ff3094b9a9
+#                port_value: 8080
+   - name: klevr_service
+     connect_timeout: 1s
+     lb_policy: ROUND_ROBIN
+     type: STRICT_DNS
+     http_protocol_options: {}
+     load_assignment:
+      cluster_name: klevr_service
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address:
+                address: 192.168.8.71
+                port_value: 8090

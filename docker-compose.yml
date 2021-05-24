@@ -1,0 +1,23 @@
+version: '3'
+services:
+   envoy-xds:
+      build:
+         context: .
+         dockerfile: Dockerfile
+      image: nexclipper/romeway
+      container_name: romeway
+      ports:
+         - "18000:18000"
+         - "19000:19000"
+      environment:
+        CONFIG_PATH: ${CONFIG_PATH:-./configuration}
+        DEFAULT_CONFIG: ${DEFAULT_CONFIG:-default}
+        CONTROL_PORT: ${CONTROL_PORT:-18000}
+        XDS_PORT: ${XDS_PORT:-19000}
+        HEALTHCHECK_INTERVAL: ${HEALTHCHECK_INTERVAL:-10}
+        HEALTHCHECK_MAX-COUNT: ${HEALTHCHECK_MAX-COUNT:-50}
+      command:
+         - bash
+         - -c
+         - |
+            java -jar /app/*.jar

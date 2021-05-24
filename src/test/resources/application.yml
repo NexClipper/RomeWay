@@ -1,0 +1,22 @@
+logging:
+  pattern:
+    console: '%d{MM/dd HH:mm:ss.SSS} [%t] [%clr(%-5p)] %clr(%logger.%M\(%line\)){cyan} - %msg %n'
+    file: '%d{MM/dd HH:mm:ss.SSS} [%t] [%clr(%-5p)] %clr(%logger.%M\(%line\)){cyan} - %msg %n'
+  level:
+    co.kr.nexcloud.envoy: debug
+
+    
+spring:
+  application:
+    name: envoy-control-plane
+
+server:
+  port: 19000
+    
+nc:
+  discovery:
+    server:
+      port: 18000
+    config:
+      path: ./src/test/resources/files
+      default-name: default
