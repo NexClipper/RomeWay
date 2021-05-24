@@ -30,9 +30,11 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @ComponentScan(basePackages = {"co.kr.nexcloud"})
+@EnableSwagger2
 public class EnvoyControlplaneConfigurations {
 	@Bean(value = "objectMapper")
 	public ObjectMapper getObjectMapper() {
@@ -58,7 +60,7 @@ public class EnvoyControlplaneConfigurations {
 		String version ="v1";
 		
 		return new Docket(DocumentationType.SWAGGER_2)
-				.groupName("Envoy control-plane API")
+				.groupName("RomeWay API")
 				.useDefaultResponseMessages(true)
 				.groupName(version)
 				.apiInfo(apiInfo(version))
@@ -67,7 +69,7 @@ public class EnvoyControlplaneConfigurations {
 	}
 	
 	private ApiInfo apiInfo(String version) {
-		return new ApiInfoBuilder().title("Envoy control-plane API")
+		return new ApiInfoBuilder().title("RomeWay API")
 				.description("NexCloud Envoy control-plane API documentation")
 				.version(version)
 				.build();

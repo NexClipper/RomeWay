@@ -1,0 +1,66 @@
+node:
+  cluster: sidecar
+  id: sidecar
+  metadata:
+    address: ${SERVICE_ADDRESS} #ip/hostname
+    port: ${SERVICE_PORT} #envoy listening port
+    service: ${SERVICE_NAME}  #cluster name
+admin:
+  access_log_path: /dev/null
+  address:
+    socket_address: { address: 0.0.0.0, port_value: 9901 }
+
+static_resources:
+  clusters:
+  - name: xds_cluster
+    connect_timeout: 1s
+    type: strict_dns
+    http2_protocol_options: {}
+    load_assignment:
+      cluster_name: xds_cluster
+      endpoints:
+        - lb_endpoints:
+          - endpoint:
+              address:
+                socket_address:
+                  address: ${XDS_URL} #romeway ip/hostname
+                  port_value: ${XDS_PORT} #romeway grpc port
+  - name: local_service
+    connect_timeout: 1s
+    type: strict_dns
+    lb_policy: round_robin
+    load_assignment:
+      cluster_name: local_service
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address:
+                address: 127.0.0.1
+                port_value: ${APP_PORT} #application listening port
+
+dynamic_resources:
+  ads_config:
+      api_type: GRPC
+      transport_api_version: V3
+      grpc_services:
+      - envoy_grpc:
+          cluster_name: xds_cluster
+  lds_config:
+    resource_api_version: V3
+    ads: {}
+  cds_config:
+    resource_api_version: V3
+    ads: {}
+
+layered_runtime:
+  layers:
+    - name: static_layer_0
+      static_layer:
+        envoy:
+          resource_limits:
+            listener:
+              example_listener_name:
+                connection_limit: 10000
+        overload:
+          global_downstream_max_connections: 50000

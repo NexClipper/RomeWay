@@ -35,4 +35,25 @@ public class XdsController {
 	public void reloadConfigurations() {
 		service.reloadConfigurations();
 	}
+	
+	@GetMapping("/clusters")
+	@ApiOperation("전체 클러스터를 조회한다.")
+	public String getClutster() {
+		return "Not implemented yet.";
+	}
+	
+	@GetMapping("/clusters/{clusterName}")
+	@ApiOperation("클러스터 그룹을 조회한다.")
+	public String getClutster(
+			@ApiParam("value=클러스터명(node.metadata.service)") @PathVariable String clusterName) {
+		return "Not implemented yet.";
+	}
+	
+	
+	@GetMapping("/clusters/{clusterName}/configuration")
+	@ApiOperation("클러스터 그룹의 설정 정보를 조회한다.")
+	public String getClusterConfig(
+			@ApiParam(value="클러스터명(node.metadata.service)") @PathVariable String clusterName) {
+		return "Not implemented yet.";
+	}
 }
