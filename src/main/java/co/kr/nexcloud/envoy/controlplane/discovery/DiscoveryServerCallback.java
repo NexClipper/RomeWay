@@ -110,7 +110,7 @@ public class DiscoveryServerCallback implements DiscoveryServerCallbacks {
 					String service = null;
 					String address = null;
 					int port = 0;
-					boolean checkAlive = true;
+					boolean checkAlive = false;
 					String type = null;
 					
 					if(meta.containsKey("service")) {
