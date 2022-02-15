@@ -1,0 +1,57 @@
+image: docker:latest
+
+variables:
+  DOCKER_DRIVER: overlay
+  MAVEN_CLI_OPTS: "-s /data/.m2/settings.xml"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  APP_DOCKERFILE_LOCATION: "Dockerfile"
+  APP_IMAGE_NAME: "romeway"
+
+default:
+  tags:
+    - nexclipper
+  services:
+    - docker:dind
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .m2/repository
+
+stages:
+  - build
+  - package
+  - deploy-dev
+
+maven-build:
+  image: maven:3.8.4-jdk-11
+  stage: build
+  script:
+    - mvn clean package -Dmaven.test.skip=true
+  artifacts:
+    paths:
+      - target/*.jar
+  only:
+    - master
+
+docker-build:
+  stage: package
+  before_script:
+    - "apk add --no-cache git"
+  script:
+    - "source /data/scripts/build.sh $APP_IMAGE_NAME"
+  only:
+    - master
+
+deploy-romeway:
+  stage: deploy-dev
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache git gettext
+    - source /data/scripts/login-cluster.sh dev 
+  script:
+    - "source /data/scripts/deploy.sh dev"
+  only:
+    - master
+
+  
