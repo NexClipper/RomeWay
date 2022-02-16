@@ -4,6 +4,7 @@ COPY ./target/*.jar /app/romeway.jar
 
 WORKDIR /app
 
-RUN mkdir -p ${CONFIG_PATH:-configuration}
+RUN mkdir -p ${CONFIG_PATH:-configuration/}
+COPY ./example-configuration/*.yml configuration/
 
-CMD ["java", "-jar", "romeway.jar"]
+CMD ["java", "-jar", "/app/romeway.jar"]
