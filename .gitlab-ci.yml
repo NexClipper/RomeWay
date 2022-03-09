@@ -31,9 +31,9 @@ maven-build:
   artifacts:
     paths:
       - target/*.jar
-  only:
-    - /\b^(issue|feature|bugfix|improvement).*$\b/
-    - $CI_DEFAULT_BRANCH
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH =~ /\b^(issue|feature|bugfix|improvement).*$\b/
+      when: always
 
 docker-build:
   stage: package
@@ -41,9 +41,9 @@ docker-build:
     - "apk add --no-cache git"
   script:
     - "source /data/scripts/build.sh $APP_IMAGE_NAME"
-  only:
-    - /\b^(issue|feature|bugfix|improvement).*$\b/
-    - $CI_DEFAULT_BRANCH
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH =~ /\b^(issue|feature|bugfix|improvement).*$\b/
+      when: always
 
 deploy-romeway:
   stage: deploy-escargot
