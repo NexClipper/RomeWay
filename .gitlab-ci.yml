@@ -14,7 +14,7 @@ default:
   retry: 2
 
 cache:
-  key: ${CI_COMMIT_REF_SLUG}
+  key: romeway
   paths:
     - .m2/repository
 
@@ -33,7 +33,6 @@ maven-build:
       - target/*.jar
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH =~ /\b^(issue|feature|bugfix|improvement).*$\b/
-      when: always
 
 docker-build:
   stage: package
@@ -43,7 +42,6 @@ docker-build:
     - "source /data/scripts/build.sh $APP_IMAGE_NAME"
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH =~ /\b^(issue|feature|bugfix|improvement).*$\b/
-      when: always
 
 deploy-romeway:
   stage: deploy-escargot
@@ -64,7 +62,6 @@ deploy-romeway:
     - "source /data/scripts/deploy.sh nc"
   rules:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-      when: always
     - if: $CI_COMMIT_BRANCH =~ /\b^(issue|feature|bugfix|improvement).*$\b/
       when: manual
 
