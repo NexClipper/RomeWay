@@ -32,7 +32,7 @@ maven-build:
     paths:
       - target/*.jar
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH =~ /\b^(issue|feature|bugfix|improvement).*$\b/
+    - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_BRANCH =~ /\b^(issue|feature|bugfix|improvement).*$\b/
 
 docker-build:
   stage: package
@@ -41,7 +41,7 @@ docker-build:
   script:
     - "source /data/scripts/build.sh $APP_IMAGE_NAME"
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH =~ /\b^(issue|feature|bugfix|improvement).*$\b/
+    - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_BRANCH =~ /\b^(issue|feature|bugfix|improvement).*$\b/
 
 deploy-romeway:
   stage: deploy-escargot
@@ -57,11 +57,11 @@ deploy-romeway:
     - echo "nameserver 8.8.8.8" >> /etc/resolv.conf
     - ping -c3 lib.nexclipper.io
     - echo -e "\nLogin to Kubernetes"
-    - source /data/scripts/login-cluster-seoul.sh escargot
+    - source /data/scripts/login-cluster-seoul.sh dev
   script:
     - "source /data/scripts/deploy.sh nc"
   rules:
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: '$CI_COMMIT_BRANCH == "dev"'
     - if: $CI_COMMIT_BRANCH =~ /\b^(issue|feature|bugfix|improvement).*$\b/
       when: manual
 

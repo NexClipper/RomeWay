@@ -4,7 +4,7 @@ logging:
     file: '%d{MM/dd HH:mm:ss.SSS} [%t] [%clr(%-5p)] %clr(%logger.%M\(%line\)){cyan} - %msg %n'
   level:
     root: info
-    co.kr.nexcloud.envoy: debug
+    co.kr.nexcloud.envoy: info
 
     
 spring:
