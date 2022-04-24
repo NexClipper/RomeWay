@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: $APP_IMAGE_NAME
+  name: $APP_IMAGE_NAME-v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: $APP_IMAGE_NAME
+  template:
+    metadata:
+      labels:
+        name: $APP_IMAGE_NAME
+    spec:
+      containers:
+        - name: $APP_IMAGE_NAME
+          image: $IMG_TAG_TO_DEPLOY
+          resources: {}
+          envFrom:
+          - configMapRef:
+              name: nc-$APP_IMAGE_NAME
+          ports:
+            - containerPort: 18000
+            - containerPort: 19000
+          volumeMounts:
+            - mountPath: /nexcloud
+              name: $APP_IMAGE_NAME-claim0
+            - mountPath: /app/configuration
+              name: $APP_IMAGE_NAME-claim0
+      restartPolicy: Always
+      volumes:
+        - name: $APP_IMAGE_NAME-claim0
+          configMap:
+            name: nc-$APP_IMAGE_NAME-files
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: $APP_IMAGE_NAME
+  name: $APP_IMAGE_NAME
+spec:
+  type: ClusterIP
+  ports:
+    - name: "19000"
+      port: 19000
+      targetPort: 19000
+    - name: "18000"
+      port: 18000
+      targetPort: 18000
+  selector:
+    name: $APP_IMAGE_NAME
