@@ -8,8 +8,6 @@ variables:
 default:
   tags:
     - nexclipper
-  services:
-    - docker:dind
   image: docker:latest
   retry: 2
 
@@ -36,6 +34,8 @@ maven-build:
 
 docker-build:
   stage: package
+  services:
+    - docker:dind
   before_script:
     - "apk add --no-cache git"
   script:
@@ -59,7 +59,7 @@ deploy-romeway:
     - echo -e "\nLogin to Kubernetes"
     - source /data/scripts/login-cluster-seoul.sh dev
   script:
-    - "source /data/scripts/deploy.sh nc"
+    - "source /data/scripts/deploy.sh dev nc"
   rules:
     - if: '$CI_COMMIT_BRANCH == "dev"'
     - if: $CI_COMMIT_BRANCH =~ /\b^(issue|feature|bugfix|improvement).*$\b/
