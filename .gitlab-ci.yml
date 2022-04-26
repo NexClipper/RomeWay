@@ -55,7 +55,6 @@ deploy-romeway:
     - openvpn --config /etc/openvpn/client.ovpn --auth-user-pass /etc/openvpn/cred.txt --daemon
     - sleep 15
     - echo "nameserver 8.8.8.8" >> /etc/resolv.conf
-    - ping -c3 lib.nexclipper.io
     - echo -e "\nLogin to Kubernetes"
     - source /data/scripts/login-cluster-seoul.sh dev
   script:
